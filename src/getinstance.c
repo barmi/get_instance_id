@@ -20,9 +20,12 @@ int get_instance(int argc, char** argv) {
   char buffer[BUFSIZ];
   enum CONSTEXPR { MAX_REQUEST_LEN = 1024};
   char request[MAX_REQUEST_LEN];
-  char request_template[] = "GET / HTTP/1.1\r\nHost: %s\r\n\r\n";
+  char request_template[] = "GET /computeMetadata/v1/instance/id HTTP/1.1\r\n"
+                            "Host: %s\r\n"
+                            "Connection: close\r\n"
+                            "Metadata-Flavor:Google\r\n\r\n";
   struct protoent *protoent;
-  char *hostname = "example.com";
+  char *hostname = "metadata.google.internal";
   in_addr_t in_addr;
   int request_len;
   int socket_file_descriptor;

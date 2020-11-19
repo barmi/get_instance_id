@@ -5,7 +5,9 @@
 
 #include "getinstance.h"
 
-int main()
+int main(int argc, char** argv)
 {
+  get_instance(argc, argv);
+
   return 0;
 }
