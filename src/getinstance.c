@@ -16,7 +16,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-int main(int argc, char** argv) {
+int get_instance(int argc, char** argv) {
   char buffer[BUFSIZ];
   enum CONSTEXPR { MAX_REQUEST_LEN = 1024};
   char request[MAX_REQUEST_LEN];
