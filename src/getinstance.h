@@ -5,6 +5,22 @@
 #ifndef SIMPLE_WGET_C_SRC_GETINSTANCE_H_
 #define SIMPLE_WGET_C_SRC_GETINSTANCE_H_
 
-int get_instance(int argc, char** argv);
+#define CLOUD_TYPE_NONE     0
+#define CLOUD_TYPE_GCP      1
+#define CLOUD_TYPE_AWS      2
+
+#define GI_NO_ERROR               0
+#define GI_ERROR_GETPROTONAME     1
+#define GI_ERROR_SOCKET           2
+#define GI_ERROR_GETHOSTBYNAME    3
+#define GI_ERROR_INET_ADDR        4
+#define GI_ERROR_CONNECT          5
+#define GI_ERROR_WRITE            6
+#define GI_ERROR_READ             7
+#define GI_ERROR_UNKNOWN          99
+
+
+
+int get_instance(char *id);
 
 #endif //SIMPLE_WGET_C_SRC_GETINSTANCE_H_

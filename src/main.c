@@ -3,11 +3,17 @@
 //
 // ref: https://stackoverflow.com/questions/11208299/how-to-make-an-http-get-request-in-c-without-libcurl
 
+#include <stdio.h>
 #include "getinstance.h"
 
-int main(int argc, char** argv)
+int main()
 {
-  get_instance(argc, argv);
+  int ctype;
+  char id[32];
+
+  if ((ctype = get_instance(id)) != CLOUD_TYPE_NONE) {
+    printf("type: %d, id: %s\n", ctype, id);
+  }
 
   return 0;
 }
