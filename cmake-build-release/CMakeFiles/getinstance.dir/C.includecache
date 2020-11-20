@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/skshin/git/simple_wget_c/src/getinstance.c
+getinstance.h
+/Users/skshin/git/simple_wget_c/src/getinstance.h
+arpa/inet.h
+-
+assert.h
+-
+netdb.h
+-
+netinet/in.h
+-
+stdbool.h
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+sys/socket.h
+-
+unistd.h
+-
+
+/Users/skshin/git/simple_wget_c/src/getinstance.h
+
+/Users/skshin/git/simple_wget_c/src/main.c
+getinstance.h
+/Users/skshin/git/simple_wget_c/src/getinstance.h
+
