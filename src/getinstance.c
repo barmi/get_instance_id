@@ -122,7 +122,7 @@ int get_instance_gcp(char *result)
   char *hostname = "metadata.google.internal";
   char id[32] = { 0, };
 
-  if (get_instance_proc(hostname, request_str, id)) {
+  if (get_instance_proc(hostname, request_str, id) == GI_NO_ERROR) {
     strcpy(result, id);
   }
 
