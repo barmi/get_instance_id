@@ -123,7 +123,7 @@ int get_instance_gcp(char *result)
   char id[32] = { 0, };
 
   if (get_instance_proc(hostname, request_str, id)) {
-    strcpy(id, result);
+    strcpy(result, id);
   }
 
   return 0;
