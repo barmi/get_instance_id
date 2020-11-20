@@ -5,6 +5,7 @@
 #include "getinstance.h"
 
 #define _XOPEN_SOURCE 700
+#define _GNU_SOURCE
 #include <arpa/inet.h>
 #include <assert.h>
 #include <netdb.h> /* getprotobyname */
@@ -34,7 +35,7 @@ int get_instance_proc(char *hostname, char *request, char *id) {
   char buffer[BUFSIZ];
   struct protoent *protoent;
   in_addr_t in_addr;
-  int request_len;
+  int request_len = strlen(request);
   int socket_file_descriptor;
   ssize_t nbytes_total, nbytes_last;
   struct hostent *hostent;
@@ -80,8 +81,28 @@ int get_instance_proc(char *hostname, char *request, char *id) {
   }
 
   /* Read the response. */
+  int state = 0; // 0: INIT, 1: READ_LENGTH, 2: READ_DONE
+  int content_length = 0;
   while ((nbytes_total = read(socket_file_descriptor, buffer, BUFSIZ)) > 0) {
-    write(STDOUT_FILENO, buffer, nbytes_total);
+    //write(STDOUT_FILENO, buffer, nbytes_total);
+    if (state == 0) {
+      char *p = strcasestr(buffer, "Content-Length:");
+      if (p) {
+        content_length = strtoul(p + 16, NULL, 10);
+        state = 1;
+      }
+    }
+    if (state == 1) {
+      char *p = strstr(buffer, "\r\n\r\n");
+      if (p) {
+        int remain = (int) (nbytes_total - (p - buffer + 4));
+        if (remain >= content_length) {
+          strncpy(id, p+4, content_length);
+          state = 2;
+          break;
+        }
+      }
+    }
   }
   if (nbytes_total == -1) {
     return GI_ERROR_READ;
