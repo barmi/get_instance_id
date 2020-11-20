@@ -81,7 +81,7 @@ int get_instance_proc(char *hostname, char *request, char *id) {
   /* Send HTTP request. */
   nbytes_total = 0;
   while (nbytes_total < request_len) {
-    nbytes_last = write(socket_file_descriptor, request + nbytes_total, request_len - nbytes_total);
+    nbytes_last = write(socket_file_descriptor, request_buf + nbytes_total, request_len - nbytes_total);
     if (nbytes_last == -1) {
       return GI_ERROR_WRITE;
     }
@@ -94,8 +94,7 @@ int get_instance_proc(char *hostname, char *request, char *id) {
   while ((nbytes_total = read(socket_file_descriptor, buffer, BUFSIZ)) > 0) {
     //write(STDOUT_FILENO, buffer, nbytes_total);
     if (state == 0) {
-      //char *p = strcasestr(buffer, "Content-Length:");
-      char *p = strstr(buffer, "Content-Length:");
+      char *p = strcasestr(buffer, "Content-Length:");
       if (p) {
         content_length = strtoul(p + 16, NULL, 10);
         state = 1;
