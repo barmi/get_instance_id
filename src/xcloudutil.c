@@ -2,7 +2,7 @@
 // Created by skshin on 2020/11/19.
 //
 
-#include "getinstance.h"
+#include "xcloudutil.h"
 
 #define _XOPEN_SOURCE 700
 #define _GNU_SOURCE
@@ -31,16 +31,24 @@ int check_env()
   return 0;
 }
 
+#define MAX_REQUEST_LEN 1024
+
 int get_instance_proc(char *hostname, char *request, char *id) {
   char buffer[BUFSIZ];
   struct protoent *protoent;
   in_addr_t in_addr;
-  int request_len = strlen(request);
+  int request_len;
+  char request_buf[MAX_REQUEST_LEN];
   int socket_file_descriptor;
   ssize_t nbytes_total, nbytes_last;
   struct hostent *hostent;
   struct sockaddr_in sockaddr_in;
   unsigned short server_port = 80;
+
+  request_len = snprintf(request_buf, MAX_REQUEST_LEN, request, hostname);
+  if (request_len >= MAX_REQUEST_LEN) {
+    return GI_ERROR_LONG_REQUEST;
+  }
 
   /* Build the socket. */
   protoent = getprotobyname("tcp");
@@ -86,7 +94,8 @@ int get_instance_proc(char *hostname, char *request, char *id) {
   while ((nbytes_total = read(socket_file_descriptor, buffer, BUFSIZ)) > 0) {
     //write(STDOUT_FILENO, buffer, nbytes_total);
     if (state == 0) {
-      char *p = strcasestr(buffer, "Content-Length:");
+      //char *p = strcasestr(buffer, "Content-Length:");
+      char *p = strstr(buffer, "Content-Length:");
       if (p) {
         content_length = strtoul(p + 16, NULL, 10);
         state = 1;

@@ -17,6 +17,7 @@
 #define GI_ERROR_CONNECT          5
 #define GI_ERROR_WRITE            6
 #define GI_ERROR_READ             7
+#define GI_ERROR_LONG_REQUEST     8
 #define GI_ERROR_UNKNOWN          99
 
 

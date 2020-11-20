@@ -4,7 +4,7 @@
 // ref: https://stackoverflow.com/questions/11208299/how-to-make-an-http-get-request-in-c-without-libcurl
 
 #include <stdio.h>
-#include "getinstance.h"
+#include "xcloudutil.h"
 
 int main()
 {

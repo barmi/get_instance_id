@@ -9,7 +9,7 @@ include_directories(src)
 
 add_executable(getinstance
         src/main.c
-        src/getinstance.c
-        src/getinstance.h
+        src/xcloudutil.c
+        src/xcloudutil.h
         )
 
