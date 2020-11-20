@@ -1,4 +1,0 @@
-"/Users/skshin/Library/Application Support/JetBrains/Toolbox/apps/CLion/ch-0/203.5784.34/CLion 2020.3 EAP.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/skshin/git/simple_wget_c
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/skshin/git/simple_wget_c/cmake-build-debug
