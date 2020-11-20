@@ -121,16 +121,37 @@ int get_instance_gcp(char *result)
                       "Metadata-Flavor:Google\r\n\r\n";
   char *hostname = "metadata.google.internal";
   char id[32] = { 0, };
+  int ret = get_instance_proc(hostname, request_str, id);
 
-  if (get_instance_proc(hostname, request_str, id) == GI_NO_ERROR) {
+  if (ret == GI_NO_ERROR) {
     strcpy(result, id);
   }
 
-  return 0;
+  return ret;
+}
+
+int get_instance_aws(char *result)
+{
+  char *request_str = "GET /latest/meta-data/instance-id HTTP/1.1\r\n"
+                      "Host: %s\r\n"
+                      "Connection: close\r\n"
+                      "\r\n";
+  char *hostname = "169.254.169.254";
+  char id[32] = { 0, };
+  int ret = get_instance_proc(hostname, request_str, id);
+
+  if (ret == GI_NO_ERROR) {
+    strcpy(result, id);
+  }
+
+  return ret;
 }
 
 int get_instance(char *id) {
-  get_instance_gcp(id);
+  if (get_instance_gcp(id) == GI_NO_ERROR)
+    return CLOUD_TYPE_GCP;
+  else if (get_instance_aws(id) == GI_NO_ERROR)
+    return CLOUD_TYPE_AWS;
 
-  return CLOUD_TYPE_GCP;
+  return CLOUD_TYPE_NONE;
 }
