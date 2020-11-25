@@ -1,6 +1,8 @@
 //
 // Created by skshin on 2020/11/19.
 //
+// aws ec2식별 : https://docs.aws.amazon.com/ko_kr/AWSEC2/latest/UserGuide/identify_ec2_instances.html
+//
 
 #include "xcloudutil.h"
 
@@ -32,6 +34,10 @@ int check_env()
 }
 
 #define MAX_REQUEST_LEN 1024
+
+#ifdef __APPLE__
+#define strcasestr strstr
+#endif
 
 int get_instance_proc(char *hostname, char *request, char *id) {
   char buffer[BUFSIZ];
@@ -138,15 +144,35 @@ int get_instance_gcp(char *result)
   return ret;
 }
 
+static int check_aws_uuid()
+{
+  FILE *fp;
+  if ((fp = fopen(AWS_UUID_FILENAME, "rt")) == NULL) {
+    return GI_ERROR_AWS_NOT_EXIST_UUID;
+  }
+  char uuid[32] = { 0, };
+  fgets(uuid, sizeof(uuid), fp);
+  if (strncmp(uuid, "ec2", 3))
+    return GI_ERROR_AWS_NOT_MATCH_UUID;
+
+  return GI_NO_ERROR;
+}
+
 int get_instance_aws(char *result)
 {
+  int ret = check_aws_uuid();
+
+  if (ret != GI_NO_ERROR)
+    return ret;
+
   char *request_str = "GET /latest/meta-data/instance-id HTTP/1.1\r\n"
                       "Host: %s\r\n"
                       "Connection: close\r\n"
                       "\r\n";
   char *hostname = "169.254.169.254";
   char id[32] = { 0, };
-  int ret = get_instance_proc(hostname, request_str, id);
+
+  ret = get_instance_proc(hostname, request_str, id);
 
   if (ret == GI_NO_ERROR) {
     strcpy(result, id);
@@ -156,10 +182,14 @@ int get_instance_aws(char *result)
 }
 
 int get_instance(char *id) {
-  if (get_instance_gcp(id) == GI_NO_ERROR)
+  printf("check gcp\n");
+  if (get_instance_gcp(id) == GI_NO_ERROR) {
     return CLOUD_TYPE_GCP;
-  else if (get_instance_aws(id) == GI_NO_ERROR)
+  }
+  printf("check aws\n");
+  if (get_instance_aws(id) == GI_NO_ERROR)
     return CLOUD_TYPE_AWS;
 
+  printf("fail\n");
   return CLOUD_TYPE_NONE;
 }
