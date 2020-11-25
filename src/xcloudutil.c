@@ -39,7 +39,8 @@ int check_env()
 #define strcasestr strstr
 #endif
 
-int get_instance_proc(char *hostname, char *request, char *id) {
+static int get_instance_proc(char *hostname, char *request, char *id)
+{
   char buffer[BUFSIZ];
   struct protoent *protoent;
   in_addr_t in_addr;
@@ -127,7 +128,7 @@ int get_instance_proc(char *hostname, char *request, char *id) {
   return GI_NO_ERROR;
 }
 
-int get_instance_gcp(char *result)
+static int get_instance_gcp(char *result)
 {
   char *request_str = "GET /computeMetadata/v1/instance/id HTTP/1.1\r\n"
                       "Host: %s\r\n"
@@ -158,7 +159,7 @@ static int check_aws_uuid()
   return GI_NO_ERROR;
 }
 
-int get_instance_aws(char *result)
+static int get_instance_aws(char *result)
 {
   int ret = check_aws_uuid();
 
@@ -181,7 +182,8 @@ int get_instance_aws(char *result)
   return ret;
 }
 
-int get_instance(char *id) {
+int get_instance(char *id)
+{
   printf("check gcp\n");
   if (get_instance_gcp(id) == GI_NO_ERROR) {
     return CLOUD_TYPE_GCP;
@@ -192,4 +194,16 @@ int get_instance(char *id) {
 
   printf("fail\n");
   return CLOUD_TYPE_NONE;
+}
+
+char* get_cloud_type_name(int ctype)
+{
+  switch(ctype) {
+    case CLOUD_TYPE_AWS:
+      return "AWS";
+    case CLOUD_TYPE_GCP:
+      return "GCP";
+    default:
+      return "NONE";
+  }
 }

@@ -25,7 +25,8 @@
 #define GI_ERROR_UNKNOWN              99
 
 
-
 int get_instance(char *id);
+char* get_cloud_type_name(int ctype);
+
 
 #endif //SIMPLE_WGET_C_SRC_GETINSTANCE_H_

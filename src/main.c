@@ -12,7 +12,7 @@ int main()
   char id[32];
 
   if ((ctype = get_instance(id)) != CLOUD_TYPE_NONE) {
-    printf("type: %d, id: %s\n", ctype, id);
+    printf("type: %s, id: %s\n", get_cloud_type_name(ctype), id);
   }
 
   return 0;
