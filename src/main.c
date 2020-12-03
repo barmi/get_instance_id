@@ -9,10 +9,10 @@
 int main()
 {
   int ctype;
-  char id[32];
+  char id[MAX_INSTANCE_ID_LENGTH + 1];
 
-  if ((ctype = get_instance(id)) != CLOUD_TYPE_NONE) {
-    printf("type: %s, id: %s\n", get_cloud_type_name(ctype), id);
+  if ((ctype = xgi_get_instance(id)) != CLOUD_TYPE_NONE) {
+    printf("type: %s, id: %s\n", xgi_get_cloud_type_name(ctype), id);
   }
 
   return 0;

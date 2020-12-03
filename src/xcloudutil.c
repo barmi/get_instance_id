@@ -19,20 +19,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-/*
- * check network env
- * return
- *   0 : no error
- *   1 : getprotoname(tcp) error
- *   2 : socket error
- *   3 : gethostbyname error
- *   4 :
- */
-int check_env()
-{
-  return 0;
-}
-
 #define MAX_REQUEST_LEN 1024
 
 #ifdef __APPLE__
@@ -182,21 +168,21 @@ static int get_instance_aws(char *result)
   return ret;
 }
 
-int get_instance(char *id)
+int xgi_get_instance(char *id)
 {
-  printf("check gcp\n");
+  //printf("check gcp\n");
   if (get_instance_gcp(id) == GI_NO_ERROR) {
     return CLOUD_TYPE_GCP;
   }
-  printf("check aws\n");
+  //printf("check aws\n");
   if (get_instance_aws(id) == GI_NO_ERROR)
     return CLOUD_TYPE_AWS;
 
-  printf("fail\n");
+  //printf("fail\n");
   return CLOUD_TYPE_NONE;
 }
 
-char* get_cloud_type_name(int ctype)
+char* xgi_get_cloud_type_name(int ctype)
 {
   switch(ctype) {
     case CLOUD_TYPE_AWS:
