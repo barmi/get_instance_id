@@ -14,6 +14,9 @@ int main()
   if ((ctype = xgi_get_instance(id)) != CLOUD_TYPE_NONE) {
     printf("type: %s, id: %s\n", xgi_get_cloud_type_name(ctype), id);
   }
+  else {
+    printf("NOT CLOUD TYPE\n");
+  }
 
   return 0;
 }

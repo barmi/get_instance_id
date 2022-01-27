@@ -83,41 +83,34 @@ int connect_nonb(int sockfd, const struct sockaddr *saptr, int salen, int nsec)
 
 static int get_instance_proc(char *hostname, char *request, char *id)
 {
-  char buffer[BUFSIZ];
-  struct protoent *protoent;
-  in_addr_t in_addr;
-  int request_len;
   char request_buf[MAX_REQUEST_LEN];
-  int socket_file_descriptor;
-  ssize_t nbytes_total, nbytes_last;
-  struct hostent *hostent;
-  struct sockaddr_in sockaddr_in;
-  unsigned short server_port = 80;
-
-  request_len = snprintf(request_buf, MAX_REQUEST_LEN, request, hostname);
+  int request_len = snprintf(request_buf, MAX_REQUEST_LEN, request, hostname);
   if (request_len >= MAX_REQUEST_LEN) {
     return GI_ERROR_LONG_REQUEST;
   }
 
   /* Build the socket. */
-  protoent = getprotobyname("tcp");
+  struct protoent* protoent = getprotobyname("tcp");
   if (protoent == NULL) {
     return GI_ERROR_GETPROTONAME;
   }
-  socket_file_descriptor = socket(AF_INET, SOCK_STREAM, protoent->p_proto);
+  int socket_file_descriptor = socket(AF_INET, SOCK_STREAM, protoent->p_proto);
   if (socket_file_descriptor == -1) {
     return GI_ERROR_SOCKET;
   }
 
   /* Build the address. */
-  hostent = gethostbyname(hostname);
+  struct hostent* hostent = gethostbyname(hostname);
   if (hostent == NULL) {
     return GI_ERROR_GETHOSTBYNAME;
   }
-  in_addr = inet_addr(inet_ntoa(*(struct in_addr*)*(hostent->h_addr_list)));
+  in_addr_t in_addr = inet_addr(inet_ntoa(*(struct in_addr*)*(hostent->h_addr_list)));
   if (in_addr == (in_addr_t)-1) {
     return GI_ERROR_INET_ADDR;
   }
+
+  struct sockaddr_in sockaddr_in;
+  unsigned short server_port = 80;
   sockaddr_in.sin_addr.s_addr = in_addr;
   sockaddr_in.sin_family = AF_INET;
   sockaddr_in.sin_port = htons(server_port);
@@ -128,7 +121,7 @@ static int get_instance_proc(char *hostname, char *request, char *id)
   }
 
   /* Send HTTP request. */
-  nbytes_total = 0;
+  ssize_t nbytes_total = 0, nbytes_last;
   while (nbytes_total < request_len) {
     nbytes_last = write(socket_file_descriptor, request_buf + nbytes_total, request_len - nbytes_total);
     if (nbytes_last == -1) {
@@ -140,6 +133,7 @@ static int get_instance_proc(char *hostname, char *request, char *id)
   /* Read the response. */
   int state = 0; // 0: INIT, 1: READ_LENGTH, 2: READ_DONE
   int content_length = 0;
+  char buffer[BUFSIZ];
   while ((nbytes_total = read(socket_file_descriptor, buffer, BUFSIZ)) > 0) {
     //write(STDOUT_FILENO, buffer, nbytes_total);
     if (state == 0) {
@@ -245,16 +239,16 @@ static int get_instance_azr(char *result)
 
 int xgi_get_instance(char *id)
 {
-  printf("check gcp\n");
+  //printf("check gcp\n");
   if (get_instance_gcp(id) == GI_NO_ERROR) {
     return CLOUD_TYPE_GCP;
   }
-  printf("check aws\n");
+  //printf("check aws\n");
   if (get_instance_aws(id) == GI_NO_ERROR) {
     return CLOUD_TYPE_AWS;
   }
 
-  printf("check azr\n");
+  //printf("check azr\n");
   if (get_instance_azr(id) == GI_NO_ERROR)
     return CLOUD_TYPE_AZR;
 

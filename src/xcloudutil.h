@@ -26,7 +26,7 @@
 #define GI_ERROR_TOO_LONG_LENGTH      11
 #define GI_ERROR_UNKNOWN              99
 
-#define MAX_INSTANCE_ID_LENGTH        32
+#define MAX_INSTANCE_ID_LENGTH        40
 
 
 int xgi_get_instance(char *id);
