@@ -8,6 +8,7 @@
 #define CLOUD_TYPE_NONE     0
 #define CLOUD_TYPE_GCP      1
 #define CLOUD_TYPE_AWS      2
+#define CLOUD_TYPE_AZR      3
 
 #define AWS_UUID_FILENAME   "/sys/hypervisor/uuid"
 

@@ -168,15 +168,39 @@ static int get_instance_aws(char *result)
   return ret;
 }
 
+static int get_instance_azr(char *result)
+{
+  char *request_str = "GET /metadata/instance/compute/vmId?api-version=2021-01-01&format=text HTTP/1.1\r\n"
+                      "Host: %s\r\n"
+                      "Metadata:true\r\n"
+                      "\r\n";
+  char *hostname = "169.254.169.254";
+  char id[42] = { 0, };
+
+  int ret = get_instance_proc(hostname, request_str, id);
+
+  // "vmId":"8fec2d23-3e2c-43dc-b79d-55ad3b55b978"
+  if (ret == GI_NO_ERROR) {
+    strcpy(result, id);
+  }
+
+  return ret;
+}
+
 int xgi_get_instance(char *id)
 {
-  //printf("check gcp\n");
+  printf("check gcp\n");
   if (get_instance_gcp(id) == GI_NO_ERROR) {
     return CLOUD_TYPE_GCP;
   }
-  //printf("check aws\n");
-  if (get_instance_aws(id) == GI_NO_ERROR)
+  printf("check aws\n");
+  if (get_instance_aws(id) == GI_NO_ERROR) {
     return CLOUD_TYPE_AWS;
+  }
+
+  printf("check azr\n");
+  if (get_instance_azr(id) == GI_NO_ERROR)
+    return CLOUD_TYPE_AZR;
 
   //printf("fail\n");
   return CLOUD_TYPE_NONE;
@@ -189,6 +213,8 @@ char* xgi_get_cloud_type_name(int ctype)
       return "AWS";
     case CLOUD_TYPE_GCP:
       return "GCP";
+    case CLOUD_TYPE_AZR:
+      return "AZR";
     default:
       return "NONE";
   }
